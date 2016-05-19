@@ -1,0 +1,878 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Machine Learning at Scale</title>
+  <style type="text/css">
+    body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  font-size: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+  background-color: #f7f7f7;
+}
+
+.slide-content {
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  margin: 80px auto 0 auto;
+  padding: 30px;
+
+  font-weight: 200;
+  font-size: 200%;
+  line-height: 1.375;
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.arrow {
+  width: 0; height: 0;
+  border: 30px solid #333;
+  float: left;
+  margin-right: 30px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prev {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+
+  border-left-width: 0;
+  border-right-width: 50px;
+}
+
+.next {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+
+  border-left-width: 50px;
+  border-right-width: 0;
+}
+
+.prev:hover {
+  border-right-color: #888;
+  cursor: pointer;
+}
+
+.next:hover {
+  border-left-color: #888;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 300%;
+  line-height: 1.2;
+  text-align: center;
+  margin: 170px 0 0;
+}
+
+h2 {
+  font-size: 100%;
+  line-height: 1.2;
+  margin: 5px 0;
+  text-align: center;
+  font-weight: 200;
+}
+
+h3 {
+  font-size: 140%;
+  line-height: 1.2;
+  border-bottom: 1px solid #aaa;
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+ul {
+  padding: 20px 0 0 60px;
+  font-weight: 200;
+  line-height: 1.375;
+}
+
+.author h1 {
+  font-size: 170%;
+  font-weight: 200;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.author h3 {
+  font-weight: 100;
+  text-align: center;
+  font-size: 95%;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: #44a4dd;
+}
+
+a:hover {
+  color: #66b5ff;
+}
+
+pre {
+  font-size: 60%;
+  line-height: 1.3;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 3px;
+  background-color: #b4b4b4;
+
+  -webkit-transition: width 0.05s ease-out;
+  -moz-transition: width 0.05s ease-out;
+  -o-transition: width 0.05s ease-out;
+  transition: width 0.05s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 850px) {
+
+  body {
+    font-size: 70%;
+  }
+
+  .slide-content {
+    width: auto;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  h1 {
+    margin-top: 120px;
+  }
+
+  .prev, .prev:hover {
+    border-right-color: rgba(135, 135, 135, 0.5);
+  }
+
+  .next, .next:hover {
+    border-left-color: rgba(135, 135, 135, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 50%;
+    overflow: hidden;
+  }
+
+  .slide-content {
+    padding: 10px;
+    margin-top: 10px;
+    height: 340px;
+  }
+
+  h1 {
+    margin-top: 50px;
+  }
+
+  ul {
+    padding-left: 25px;
+  }
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: letter;
+  }
+
+  .hidden {
+    display: inline;
+  }
+
+  html {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  body {
+    margin: 0 auto !important;
+    border: 0;
+    padding: 0;
+    float: none !important;
+    overflow: visible;
+    background: none !important;
+    font-size: 52%;
+  }
+
+  .progress, .controls {
+    display: none;
+  }
+
+  .slide {
+    position: static;
+  }
+
+  .slide-content {
+    border: 1px solid #222;
+    margin-top: 0;
+    margin-bottom: 40px;
+    height: 3.5in;
+    overflow: visible;
+  }
+
+  .slide:nth-child(even) {
+    /* 2 slides per page */
+    page-break-before: always;
+  }
+}
+
+/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #333;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #008080;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #d14;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #900;
+  font-weight: bold;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #000080;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #990073;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3;
+}
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+
+  </style>
+</head>
+<body>
+    <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="slide" id="slide-1">
+    <section class="slide-content"><h1 id="machine-learning-at-scale">Machine Learning at Scale</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-2">
+    <section class="slide-content"><h3 id="goals">Goals</h3>
+<p>1) Understand (some of) the ecosystem of tools for machine learning with big data.</p>
+<p>2) Be able to apply predictive models to large data sets on a remote server cluster.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-3">
+    <section class="slide-content"><h3 id="tools">Tools</h3>
+<ul>
+<li>AWS</li>
+<li>Spark / PySpark</li>
+<li>MLlib</li>
+<li>Hadoop Distributed File System</li>
+<li>flintrock (optional)</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-4">
+    <section class="slide-content"><h3 id="aws">AWS</h3>
+<p> Amazon Web Services - A suite of cloud computing services that make up an on-demand computing platform.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-5">
+    <section class="slide-content"><h3 id="aws-elasic-compute-cloud-ec2-">AWS - Elasic Compute Cloud (EC2)</h3>
+<p>Rentable virtual computers on which individuals can run their own applications.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-6">
+    <section class="slide-content"><h3 id="aws-elastic-mapreduce-emr-">AWS - Elastic MapReduce (EMR)</h3>
+<p>A managed Hadoop framework to distribute and process data across dynamically scalable Amazon EC2 instances.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-7">
+    <section class="slide-content"><h3 id="aws-simple-storage-service-s3-">AWS - Simple Storage Service (S3)</h3>
+<p>Durable and highly-scalable cloud storage.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="spark">Spark</h3>
+<ul>
+<li>An open source cluster computing framework.</li>
+<li>Compatible with Python (as PySpark).</li>
+<li>Also available for as Java, Scala, and R.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><h3 id="mllib">MLlib</h3>
+<ul>
+<li>Machine learning library built on top of on Spark.</li>
+<li>Compatible with Python / PySpark (as well as Java, Scala, and SparkR).</li>
+<li>Python APIs will be comfortable for users of scikit-learn.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-10">
+    <section class="slide-content"><h3 id="hadoop-distributed-file-system-hdfs-">Hadoop Distributed File System (HDFS)</h3>
+<ul>
+<li>Java-based file system for scalable and reliable data storage (which Spark uses).</li>
+<li>Highly fault tolerant; architected to expect failure of individual nodes.</li>
+<li>High bandwidth for processing large files quickly.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-11">
+    <section class="slide-content"><h3 id="flintrock">flintrock</h3>
+<ul>
+<li>A command-line tool for launching Spark clusters on AWS.</li>
+<li>One of several such tools; clusters can also be managed from an AWS CLI or web console.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-12">
+    <section class="slide-content"><h3 id="our-big-data-ml-stack">Our Big Data ML Stack</h3>
+<p><img height=350 width=350 src="./images/stack.png"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-13">
+    <section class="slide-content"><h3 id="spark-crash-course">Spark Crash Course</h3>
+<ul>
+<li>Resilient Distributed Dataset (RDD)</li>
+<li>Partitioning</li>
+<li>&quot;Array&quot; Methods</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-14">
+    <section class="slide-content"><h3 id="resilient-distributed-dataset-rdd-">Resilient Distributed Dataset (RDD)</h3>
+<ul>
+<li>Central structure in Spark. A read-only multiset of data distributed over a cluster of machines.</li>
+<li>Allows for common array methods to be performed in parallel but abstracts away this complexity.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h3 id="partitioning">Partitioning</h3>
+<pre><code class="lang-Python"><span class="hljs-keyword">from</span> pyspark <span class="hljs-keyword">import</span> SparkContext <span class="hljs-keyword">as</span> sc
+
+<span class="hljs-comment"># create an RDD from a list</span>
+my_rdd = sc.parallelize([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>])
+
+<span class="hljs-comment"># or create one by reading in data</span>
+another_rdd = sc.textFile(<span class="hljs-string">"/path/to/some/data"</span>)
+
+<span class="hljs-comment"># "gather" the elements of the RDD</span>
+my_rdd.collect()
+<span class="hljs-comment"># output: [1, 2, 3, 4, 5]</span></code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-16">
+    <section class="slide-content"><p><img height=350 width=350 src="./images/partition.png"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-17">
+    <section class="slide-content"><h3 id="-array-methods">&quot;Array&quot; Methods</h3>
+<ul>
+<li>map</li>
+<li>reduce</li>
+<li>filter</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
+    <section class="slide-content"><h3 id="map">Map</h3>
+<p><img height=350 width=350 src="./images/map.png"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-19">
+    <section class="slide-content"><h3 id="reduce">Reduce</h3>
+<p><img height=350 width=350 src="./images/reduce.png"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-20">
+    <section class="slide-content"><h3 id="filter">Filter</h3>
+<p><img height=350 width=350 src="./images/filter.png"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-21">
+    <section class="slide-content"><h3 id="chaining-methods">Chaining Methods</h3>
+<p>Chaining works basically how you would expect.</p>
+<pre><code class="lang-Python">even = <span class="hljs-keyword">lambda</span> x: x % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>
+double = <span class="hljs-keyword">lambda</span> x: x * <span class="hljs-number">2</span>
+add = <span class="hljs-keyword">lambda</span> x, y: x + y
+
+my_rdd.filter(even).map(double).reduce(add) <span class="hljs-comment">#output: 12</span>
+
+<span class="hljs-string">"""
+[1, 2] =&gt; [2] =&gt; [4] =&gt; 4
+[3]    =&gt; []         =&gt; + =&gt; 12
+[4, 5] =&gt; [4] =&gt; [8] =&gt; 8
+"""</span></code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-22">
+    <section class="slide-content"><p>Good news! No more drawing!</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-23">
+    <section class="slide-content"><h3 id="mllib-crash-course">MLlib Crash Course</h3>
+<ul>
+<li>Like scikit-learn, MLlib supports common algorithms in supervised and unsupervised learning.</li>
+<li>Models are given training data in a specific format and can then make predictions on new points.</li>
+<li>It does other stuff like summary statistics / hypothesis testing / etc. There are a lot of features we can&#39;t cover.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-24">
+    <section class="slide-content"><h3 id="supervised-example-linear-regression-">Supervised Example (Linear Regression)</h3>
+<pre><code class="lang-python">
+data = sc.textFile(<span class="hljs-string">"path/to/some.data"</span>)
+parsedData = data.map(parsePoint)
+
+<span class="hljs-comment"># Build the model</span>
+model = LinearRegressionWithSGD.train(parsedData, iterations=<span class="hljs-number">100</span>, step=<span class="hljs-number">0.00000001</span>)
+
+<span class="hljs-comment"># Make a prediction for a new point</span>
+print(model.predict(p))</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-25">
+    <section class="slide-content"><h3 id="unsupervised-example-k-means-clustering-">Unsupervised Example (K-means Clustering)</h3>
+<pre><code class="lang-python">data = sc.textFile(<span class="hljs-string">"path/to/some.data"</span>)
+parsedData = data.map(parsePoint)
+
+<span class="hljs-comment"># Build the model (cluster the data)</span>
+clusters = KMeans.train(parsedData, <span class="hljs-number">2</span>, maxIterations=<span class="hljs-number">10</span>,
+        runs=<span class="hljs-number">10</span>, initializationMode=<span class="hljs-string">"random"</span>)
+
+<span class="hljs-comment"># Predict the cluster for a new point</span>
+print(clusters.predict(p))</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-26">
+    <section class="slide-content"><h3 id="sample-problem">Sample Problem</h3>
+<p>Analyze a classification algorithm to a large data set using Spark / MLlib running on an AWS cluster.</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-27">
+    <section class="slide-content"><h3 id="our-data">Our Data</h3>
+<pre><code>T,2,8,3,5,1,8,13,0,6,6,10,8,0,8,0,8
+I,5,12,3,7,2,10,5,5,4,13,3,9,2,8,4,10
+D,4,11,6,8,6,10,6,2,6,10,3,7,3,7,3,9
+N,7,11,6,6,3,5,9,4,6,4,4,10,6,10,2,8
+G,2,1,3,1,1,8,6,6,6,6,5,9,1,7,5,10
+S,4,11,5,8,3,8,8,6,9,5,6,6,0,8,9,7
+B,4,2,5,4,4,8,7,6,6,7,6,6,2,8,7,10
+A,1,1,3,2,1,8,2,2,2,8,2,8,1,6,2,7
+J,2,2,4,4,2,10,6,2,6,12,4,8,1,6,1,7
+M,11,15,13,9,7,13,2,6,2,12,1,9,8,1,1,8
+X,3,9,5,7,4,8,7,3,8,5,6,8,2,8,6,7
+O,6,13,4,7,4,6,7,6,3,10,7,9,5,9,5,8
+.          .          .          .
+.          .          .          .
+.          .          .          .
+.          .          .          .</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-28">
+    <section class="slide-content"><h3 id="our-code-dependencies-variables-">Our Code (dependencies &amp; variables)</h3>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> pyspark.mllib.tree <span class="hljs-keyword">import</span> RandomForest, RandomForestModel
+<span class="hljs-keyword">from</span> pyspark.mllib.regression <span class="hljs-keyword">import</span> LabeledPoint
+<span class="hljs-keyword">from</span> pyspark <span class="hljs-keyword">import</span> SparkContext
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+  sc = SparkContext(appName = <span class="hljs-string">"letter-recognition"</span>)
+
+  <span class="hljs-comment"># mapping alphabet to integers</span>
+  ALPHABET = list(<span class="hljs-string">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>)
+  clean_value = <span class="hljs-keyword">lambda</span> row: LabeledPoint(ALPHABET.index(row[<span class="hljs-number">0</span>]), row.split(<span class="hljs-string">','</span>)[<span class="hljs-number">1</span>:])</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-29">
+    <section class="slide-content"><h3 id="our-code-data-holdouts-training-">Our Code (data, holdouts, &amp; training)</h3>
+<pre><code class="lang-python">  <span class="hljs-comment"># read data and convert to labeled points</span>
+  raw_data = sc.textFile(<span class="hljs-string">"hdfs:///data/letter-recognition.data"</span>)
+  labeled_points = raw_data.map(clean_value)
+
+  <span class="hljs-comment"># separate into testing and training data</span>
+  (train, test) = labeled_points.randomSplit([<span class="hljs-number">0.7</span>, <span class="hljs-number">0.3</span>])
+
+  <span class="hljs-comment"># build our model from the training data</span>
+  model = RandomForest.trainClassifier(train, numClasses=<span class="hljs-number">26</span>, categoricalFeaturesInfo={},
+                                       numTrees=<span class="hljs-number">50</span>, featureSubsetStrategy=<span class="hljs-string">"auto"</span>,
+                                       impurity=<span class="hljs-string">'gini'</span>, maxDepth=<span class="hljs-number">16</span>, maxBins=<span class="hljs-number">32</span>)</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-30">
+    <section class="slide-content"><h3 id="our-code-scoring-output-">Our Code (scoring &amp; output)</h3>
+<pre><code class="lang-python">  <span class="hljs-comment"># score the performance of our model on test data</span>
+  labels = test.map(<span class="hljs-keyword">lambda</span> point: point.label)
+  predicitons = model.predict(test.map(<span class="hljs-keyword">lambda</span> point: point.features))
+  labels_and_predictions = labels.zip(predicitons)
+
+  total_correct = labels_and_predictions.filter(<span class="hljs-keyword">lambda</span> x: x[<span class="hljs-number">0</span>] == x[<span class="hljs-number">1</span>])
+  correct_percentage = total_correct.count() / float(labels_and_predictions.count())
+
+  <span class="hljs-keyword">print</span> (<span class="hljs-string">"PERCENTAGE CORRECTLY CLASSIFIED: {}"</span>.format(correct_percentage))
+  <span class="hljs-string">"""
+  You may want to do something else here.
+  For example, write the model to a file which can be exported to S3.
+  """</span>
+
+  sc.stop()</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-31">
+    <section class="slide-content"><h3 id="putting-it-together-procedure-">Putting It Together (Procedure)</h3>
+<ul>
+<li>Setup flintrock</li>
+<li>Launch a cluster</li>
+<li>Setup the cluster</li>
+<li>Get the files on the cluster</li>
+<li>Put files on the HDFS</li>
+<li>Run the code</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-32">
+    <section class="slide-content"><h3 id="setup-flintrock">Setup flintrock</h3>
+<ul>
+<li>install flintrock following instructions on Github</li>
+<li><code>flintrock configure</code></li>
+<li>in the YAML file<ul>
+<li>set AWS credentials</li>
+<li>adjust AWS instance as desired (type, slave node count, region, etc.)</li>
+<li>set <code>install-hdfs</code> to <code>True</code></li>
+</ul>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-33">
+    <section class="slide-content"><h3 id="launch-a-cluster">Launch a cluster</h3>
+<ul>
+<li><code>flintrock launch my_cluster</code></li>
+<li><code>flintrock login my_cluster</code></li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-34">
+    <section class="slide-content"><h3 id="setup-the-cluster">Setup the cluster</h3>
+<p>The machines in our cluster require some setup (i.e. we need to install dependencies)</p>
+<pre><code>sudo yum install -y gcc
+sudo pip install numpy</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-35">
+    <section class="slide-content"><h3 id="get-the-files-on-the-cluster">Get the files on the cluster</h3>
+<ul>
+<li><p>S3 is ideal for hosting large files, copy from there. AWS CLI syntax is:</p>
+<pre><code>aws s3 cp s3://bucket/file ./local/path</code></pre>
+</li>
+<li><p>Grab our data and code:</p>
+<pre><code>aws s3 cp s3://python-nepstein/letter-recognition.data ./letter-recognition.data
+aws s3 cp s3://python-nepstein/classify-letters.py ./classify-letters.py</code></pre>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-36">
+    <section class="slide-content"><h3 id="put-files-on-the-hdfs">Put files on the HDFS</h3>
+<pre><code>hadoop/bin/hadoop fs -put letter-recognition.data /
+hadoop/bin/hadoop fs -put classify-letters.py /</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-37">
+    <section class="slide-content"><h3 id="run-the-code">Run the code</h3>
+<p>Lastly...</p>
+<pre><code>spark/bin/spark-submit hdfs:///classify-letters.py</code></pre>
+<p>... and done!</p>
+</section>
+  </div>
+  <div class="slide hidden author-slide" id="slide-38">
+    <section class="slide-content"><div class="author">
+  <h1 class="name">Nathan Epstein</h1>
+    <h3 class="twitter">
+      <a href="http://twitter.com/@epstein_n">@epstein_n</a>
+    </h3>
+    <h3 class="url">
+      <a href="http://nepste.in">http://nepste.in</a>
+    </h3>
+    <h3 class="email">
+      <a href="mailto:_@nepste.in">_@nepste.in</a>
+    </h3>
+</div>
+</section>
+  </div>
+
+  <div class="controls">
+    <div class="arrow prev"></div>
+    <div class="arrow next"></div>
+  </div>
+
+
+  <script type="text/javascript">
+    /**
+ * Returns the current page number of the presentation.
+ */
+function currentPosition() {
+  return parseInt(document.querySelector('.slide:not(.hidden)').id.slice(6));
+}
+
+
+/**
+ * Navigates forward n pages
+ * If n is negative, we will navigate in reverse
+ */
+function navigate(n) {
+  var position = currentPosition();
+  var numSlides = document.getElementsByClassName('slide').length;
+
+  /* Positions are 1-indexed, so we need to add and subtract 1 */
+  var nextPosition = (position - 1 + n) % numSlides + 1;
+
+  /* Normalize nextPosition in-case of a negative modulo result */
+  nextPosition = (nextPosition - 1 + numSlides) % numSlides + 1;
+
+  document.getElementById('slide-' + position).classList.add('hidden');
+  document.getElementById('slide-' + nextPosition).classList.remove('hidden');
+
+  updateProgress();
+  updateURL();
+  updateTabIndex();
+}
+
+
+/**
+ * Updates the current URL to include a hashtag of the current page number.
+ */
+function updateURL() {
+  try {
+    window.history.replaceState({} , null, '#' + currentPosition());
+  } catch (e) {
+    window.location.hash = currentPosition();
+  }
+}
+
+
+/**
+ * Sets the progress indicator.
+ */
+function updateProgress() {
+  var progressBar = document.querySelector('.progress-bar');
+
+  if (progressBar !== null) {
+    var numSlides = document.getElementsByClassName('slide').length;
+    var position = currentPosition() - 1;
+    var percent = (numSlides === 1) ? 100 : 100 * position / (numSlides - 1);
+    progressBar.style.width = percent.toString() + '%';
+  }
+}
+
+
+/**
+ * Removes tabindex property from all links on the current slide, sets
+ * tabindex = -1 for all links on other slides. Prevents slides from appearing
+ * out of control.
+ */
+function updateTabIndex() {
+  var allLinks = document.querySelectorAll('.slide a');
+  var position = currentPosition();
+  var currentPageLinks = document.getElementById('slide-' + position).querySelectorAll('a');
+  var i;
+
+  for (i = 0; i < allLinks.length; i++) {
+    allLinks[i].setAttribute('tabindex', -1);
+  }
+
+  for (i = 0; i < currentPageLinks.length; i++) {
+    currentPageLinks[i].removeAttribute('tabindex');
+  }
+}
+
+/**
+ * Determines whether or not we are currently in full screen mode
+ */
+function isFullScreen() {
+  return document.fullscreenElement ||
+         document.mozFullScreenElement ||
+         document.webkitFullscreenElement ||
+         document.msFullscreenElement;
+}
+
+/**
+ * Toggle fullScreen mode on document element.
+ * Works on chrome (>= 15), firefox (>= 9), ie (>= 11), opera(>= 12.1), safari (>= 5).
+ */
+function toggleFullScreen() {
+  /* Convenient renames */
+  var docElem = document.documentElement;
+  var doc = document;
+
+  docElem.requestFullscreen =
+      docElem.requestFullscreen ||
+      docElem.msRequestFullscreen ||
+      docElem.mozRequestFullScreen ||
+      docElem.webkitRequestFullscreen.bind(docElem, Element.ALLOW_KEYBOARD_INPUT);
+
+  doc.exitFullscreen =
+      doc.exitFullscreen ||
+      doc.msExitFullscreen ||
+      doc.mozCancelFullScreen ||
+      doc.webkitExitFullscreen;
+
+  isFullScreen() ? doc.exitFullscreen() : docElem.requestFullscreen();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Update the tabindex to prevent weird slide transitioning
+  updateTabIndex();
+
+  // If the location hash specifies a page number, go to it.
+  var page = window.location.hash.slice(1);
+  if (page) {
+    navigate(parseInt(page) - 1);
+  }
+
+  document.onkeydown = function (e) {
+    var kc = e.keyCode;
+
+    // left, down, H, J, backspace, PgUp - BACK
+    // up, right, K, L, space, PgDn - FORWARD
+    // enter - FULLSCREEN
+    if (kc === 37 || kc === 40 || kc === 8 || kc === 72 || kc === 74 || kc === 33) {
+      navigate(-1);
+    } else if (kc === 38 || kc === 39 || kc === 32 || kc === 75 || kc === 76 || kc === 34) {
+      navigate(1);
+    } else if (kc === 13) {
+      toggleFullScreen();
+    }
+  };
+
+  if (document.querySelector('.next') && document.querySelector('.prev')) {
+    document.querySelector('.next').onclick = function (e) {
+      e.preventDefault();
+      navigate(1);
+    };
+
+    document.querySelector('.prev').onclick = function (e) {
+      e.preventDefault();
+      navigate(-1);
+    };
+  }
+});
+
+
+  </script>
+</body>
+</html>
