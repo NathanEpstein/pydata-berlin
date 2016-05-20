@@ -84,7 +84,7 @@ Durable and highly-scalable cloud storage.
 
 ### Our Big Data ML Stack
 
-<img height=350 width=500 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/stack.png">
+<img height=350 width=450 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/stack.png">
 
 
 --
@@ -110,7 +110,7 @@ Durable and highly-scalable cloud storage.
 from pyspark import SparkContext as sc
 
 # create an RDD from a list
-my_rdd = sc.parallelize([1, 2, 3, 4, 5, 6])
+my_rdd = sc.parallelize([1, 2, 3, 4, 5])
 
 # or create one by reading in data
 another_rdd = sc.textFile("/path/to/some/data")
