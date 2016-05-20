@@ -466,7 +466,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <pre><code class="lang-Python"><span class="hljs-keyword">from</span> pyspark <span class="hljs-keyword">import</span> SparkContext <span class="hljs-keyword">as</span> sc
 
 <span class="hljs-comment"># create an RDD from a list</span>
-my_rdd = sc.parallelize([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>])
+my_rdd = sc.parallelize([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>])
 
 <span class="hljs-comment"># or create one by reading in data</span>
 another_rdd = sc.textFile(<span class="hljs-string">"/path/to/some/data"</span>)
@@ -515,7 +515,7 @@ my_rdd.filter(even).map(double).reduce(add) <span class="hljs-comment">#output: 
 
 <span class="hljs-string">"""
 [1, 2] =&gt; [2] =&gt; [4] =&gt; 4
-[3]    =&gt; []         =&gt; + =&gt; 12
+[3]    =&gt; []  =&gt; []  =&gt; 0 =&gt; 4 + 0 + 8 =&gt; 12
 [4, 5] =&gt; [4] =&gt; [8] =&gt; 8
 """</span></code></pre>
 </section>
