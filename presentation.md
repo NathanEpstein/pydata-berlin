@@ -55,7 +55,7 @@ Durable and highly-scalable cloud storage.
 
 - An open source cluster computing framework.
 - Compatible with Python (as PySpark).
-- Also available for as Java, Scala, and R.
+- Also available for Java, Scala, and R.
 
 --
 
@@ -84,7 +84,7 @@ Durable and highly-scalable cloud storage.
 
 ### Our Big Data ML Stack
 
-<img height=350 width=600 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/stack.png">
+<img height=350 width=500 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/stack.png">
 
 
 --
