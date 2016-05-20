@@ -84,7 +84,8 @@ Durable and highly-scalable cloud storage.
 
 ### Our Big Data ML Stack
 
-<img height=350 width=350 src="./images/stack.png">
+<img height=350 width=600 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/stack.png">
+
 
 --
 
@@ -122,7 +123,7 @@ my_rdd.collect()
 
 --
 
-<img height=350 width=350 src="./images/partition.png">
+<img height=350 width=600 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/partition.png">
 
 --
 
@@ -136,20 +137,20 @@ my_rdd.collect()
 
 ### Map
 
-<img height=350 width=350 src="./images/map.png">
+<img height=350 width=600 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/map.png">
 
 --
 
 ### Reduce
 
-<img height=350 width=350 src="./images/reduce.png">
+<img height=350 width=600 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/reduce.png">
 
 
 --
 
 ### Filter
 
-<img height=350 width=350 src="./images/filter.png">
+<img height=350 width=600 src="https://raw.githubusercontent.com/NathanEpstein/pydata-berlin/master/images/filter.png">
 
 
 --
