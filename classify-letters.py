@@ -1,12 +1,3 @@
-# using flintrock
-# sudo yum install -y gcc
-# sudo pip install numpy
-# copy stuff in from s3:
-  # aws s3 cp s3://python-nepstein/classify-letters.py ./classify-letters.py
-# and put to hdfs:
-  # hadoop/bin/hadoop fs -put classify-letters.py /
-
-
 from pyspark.mllib.tree import RandomForest, RandomForestModel
 from pyspark.mllib.regression import LabeledPoint
 from pyspark import SparkContext
